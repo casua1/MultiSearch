@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@class WebBrowserViewController;
+@class MainMenuViewController;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (strong, nonatomic) WebBrowserViewController *viewController;
+@property (strong, nonatomic) UINavigationController *navController;
+
+@property (strong, nonatomic) MainMenuViewController *mainMenuViewController;
 
 @end

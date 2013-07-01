@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 
-#import "WebBrowserViewController.h"
+#import "MainMenuViewController.h"
 
 @implementation AppDelegate
 
@@ -17,9 +17,10 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        self.viewController = [[WebBrowserViewController alloc] initWithNibName:@"WebBrowserViewController_iPhone" bundle:nil];
+        self.mainMenuViewController = [[MainMenuViewController alloc] initWithNibName:@"MainMenuViewController" bundle:nil];
     }
-    self.window.rootViewController = self.viewController;
+    self.navController = [[UINavigationController alloc] initWithRootViewController:self.mainMenuViewController];
+    self.window.rootViewController = self.navController;
     [self.window makeKeyAndVisible];
     return YES;
 }
