@@ -14,19 +14,25 @@
 
 @implementation WebBrowserViewController
 
-@synthesize webView, addressBar;
+@synthesize webView, addressBar, address, term;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    
-    NSString *address = @"http://www.google.com";
-    NSURL *url = [NSURL URLWithString:address];
+//    NSURL *url = [NSURL URLWithString:address];
+//    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//    
+//    [webView loadRequest:request];
+
+    NSURL *url = [NSURL URLWithString:@"http://httpbin.org/ip"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    [webView loadRequest:request];
-    [addressBar setText:address];
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"IP Address: %@", [JSON valueForKeyPath:@"origin"]);
+    } failure:nil];
+    
+    [operation start];
 }
 
 - (void)didReceiveMemoryWarning
@@ -37,11 +43,10 @@
 
 -(IBAction)goAddress:(id)sender
 {
-    NSURL *url = [NSURL URLWithString:[addressBar text]];
+    NSURL *url = [NSURL URLWithString:address];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
     [webView loadRequest:request];
-    [addressBar resignFirstResponder];
 }
 
 -(BOOL)webView: (UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -52,12 +57,35 @@
         
         if([[url scheme] isEqualToString:@"http"])
         {
-            [addressBar setText:[url absoluteString]];
             [self goAddress:nil];
         }
         return NO;
     }
     return YES;
+}
+
+-(IBAction)getSearchTerm:(id)sender;
+{
+    term = [sender text];
+    NSLog(@"%@", term);
+    [self fixTerm];
+    [self setAddress];
+    [self goAddress:(id)sender];
+}
+
+-(void)fixTerm
+{
+    NSString *string = term;
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@" " options:NSRegularExpressionCaseInsensitive error:&error];
+    term = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@"+"];
+}
+
+-(void)setAddress
+{
+    NSString *base = @"http://google.com/search?q=";
+    address = [base stringByAppendingString:term];
+    NSLog(@"%@",address);
 }
 
 @end
