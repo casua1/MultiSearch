@@ -15,16 +15,14 @@
 
 
 @property (strong, nonatomic) WebBrowserViewController *webBrowserViewController;
-@property (strong, nonatomic) UIButton *testButton;
 @property (strong, nonatomic) NSString *address1;
 @property (strong, nonatomic) NSString *address2;
 @property (strong, nonatomic) NSString *unfixedTerm;
 @property (strong, nonatomic) NSString *fixedTerm;
-@property (strong, nonatomic) IBOutlet UIPickerView *pickerView;
 @property (strong, nonatomic) NSMutableArray *column;
-
+@property (strong, nonatomic) IBOutlet UIPickerView *pickerView;
 
 -(IBAction)switchToWebBrowserView:(id)sender;
--(IBAction)getSearchTerm:(id)sender;
+-(IBAction)getSearchTermAndRun:(id)sender;
 
 @end

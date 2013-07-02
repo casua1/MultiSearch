@@ -15,7 +15,8 @@
 
 @implementation MainMenuViewController
 
-@synthesize webBrowserViewController, testButton, address1, address2, unfixedTerm, fixedTerm, pickerView, column;
+@synthesize webBrowserViewController, address1, address2, unfixedTerm, fixedTerm, column, pickerView;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -26,6 +27,7 @@
     return self;
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -33,41 +35,33 @@
     column = [[NSMutableArray alloc] initWithObjects:@"Google", @"Yahoo", @"Bing", @"Ask", @"AOL", @"Dogpile", @"Duck Duck Go", nil];
 }
 
+
+//Setting up for the UIPickerView.
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView;
 {
     return 2;
 }
 
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component;
 {
-}
-
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component;
-{
-//    if (component == 0)
-//    {
-        return [column count];
-//    }
+    return [column count];
 }
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component;
 {
-//    if (component == 0)
-//    {
-        return [column objectAtIndex:row];
-/*    }
-    else
-    {
-        return [column objectAtIndex:row];
-    }*/
+    return [column objectAtIndex:row];
 }
+//End UIPickerView setup.
+
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationItem setTitle:@"Main"];
+    //Set up Nav Controller styling.
+    [self.navigationItem setTitle:@"MultiSearch"];
     [self.navigationController.navigationBar setBarStyle:UIBarStyleBlack];
     [self.view setBackgroundColor:[UIColor darkGrayColor]];
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -75,18 +69,19 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 -(IBAction)switchToWebBrowserView:(id)sender
 {
-    self.webBrowserViewController = [[WebBrowserViewController alloc] initWithNibName:@"WebBrowserViewController_iPhone" bundle:nil];
+    self.webBrowserViewController = [[WebBrowserViewController alloc] initWithNibName:@"WebBrowserViewController" bundle:nil];
     webBrowserViewController.address1 = address1;
     webBrowserViewController.address2 = address2;
     [self.navigationController pushViewController:self.webBrowserViewController animated:YES];
-    [self.webBrowserViewController setTitle:(@"%@", unfixedTerm)];
+    [self.webBrowserViewController setTitle:unfixedTerm];
 }
 
 
-//Takes in the search term from the user.
--(IBAction)getSearchTerm:(id)sender;
+//Takes in the search term from the user and runs the search.
+-(IBAction)getSearchTermAndRun:(id)sender
 {
     unfixedTerm = [sender text];
     [sender resignFirstResponder];
@@ -99,8 +94,7 @@
 //Formats the user search term to be compatible with the url.
 -(void)fixTerm
 {
-    NSError *error = NULL;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@" " options:NSRegularExpressionCaseInsensitive error:&error];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@" " options:NSRegularExpressionCaseInsensitive error:NULL];
     fixedTerm = [regex stringByReplacingMatchesInString:unfixedTerm options:0 range:NSMakeRange(0, [unfixedTerm length]) withTemplate:@"+"];
 }
 

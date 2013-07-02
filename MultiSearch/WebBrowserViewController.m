@@ -14,7 +14,7 @@
 
 @implementation WebBrowserViewController
 
-@synthesize webView, webView2, mainMenuViewController, address1, address2, engineSelect;
+@synthesize mainMenuViewController, webView, webView2, pageControl, address1, address2;
 
 
 - (void)viewDidLoad
@@ -22,18 +22,15 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     [self startUp:nil];
-    [webView2 setHidden:TRUE];
 }
 
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController.navigationBar setBarStyle:UIBarStyleBlack];
-//    [self.view setBackgroundColor:[UIColor darkGrayColor]];
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style: UIBarButtonItemStylePlain target: self action:@selector(switchToMainMenuView:)];
     self.navigationItem.leftBarButtonItem = backButton;
 }
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -42,15 +39,15 @@
 }
 
 
+//Switches back to the main view controller.
 -(IBAction)switchToMainMenuView:(id)sender
 {
     self.mainMenuViewController = [[UIViewController alloc] initWithNibName:@"MainMenuViewController" bundle:nil];
     [self.navigationController popViewControllerAnimated:YES];
-    [self.mainMenuViewController setTitle:@"MultiSearch"];
 }
 
 
-//Does web view thingies.
+//Does web view thingies.(I don't know how it works, it just does.)
 -(BOOL)webView: (UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     if (navigationType == UIWebViewNavigationTypeLinkClicked)
@@ -66,7 +63,6 @@
     return YES;
 }
 
-
 //Takes fixed url and fires the request.
 -(void)startUp:(id)sender
 {
@@ -74,23 +70,16 @@
     [webView2 loadRequest:[self getRequest:address2]];
 }
 
--(NSURLRequest*)getRequest:(NSString *)tempAddress
+
+-(NSURLRequest*)getRequest:(NSString *)address
 {
-    NSURL *url = [NSURL URLWithString:tempAddress];
+    NSURL *url = [NSURL URLWithString:address];
     return [NSURLRequest requestWithURL:url];
 }
 
 - (IBAction)changePage:(id)sender
 {
-    if (engineSelect.currentPage == 0){
-        [webView setHidden:FALSE];
-        [webView2 setHidden:TRUE];
-    }
-    else if (engineSelect.currentPage == 1){
-        [webView2 setHidden:FALSE];
-        [webView setHidden:TRUE];
-    }
+    
 }
-
 
 @end
