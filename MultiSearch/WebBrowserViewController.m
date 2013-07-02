@@ -14,7 +14,7 @@
 
 @implementation WebBrowserViewController
 
-@synthesize webView, mainMenuViewController, address;
+@synthesize webView, webView2, mainMenuViewController, address1, address2, engineSelect;
 
 
 - (void)viewDidLoad
@@ -22,13 +22,14 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     [self startUp:nil];
+    [webView2 setHidden:TRUE];
 }
 
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController.navigationBar setBarStyle:UIBarStyleBlack];
-    [self.view setBackgroundColor:[UIColor darkGrayColor]];
+//    [self.view setBackgroundColor:[UIColor darkGrayColor]];
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style: UIBarButtonItemStylePlain target: self action:@selector(switchToMainMenuView:)];
     self.navigationItem.leftBarButtonItem = backButton;
 }
@@ -69,13 +70,27 @@
 //Takes fixed url and fires the request.
 -(void)startUp:(id)sender
 {
-    NSURL *url = [NSURL URLWithString:address];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    [webView loadRequest:request];
+    [webView loadRequest:[self getRequest:address1]];
+    [webView2 loadRequest:[self getRequest:address2]];
 }
 
+-(NSURLRequest*)getRequest:(NSString *)tempAddress
+{
+    NSURL *url = [NSURL URLWithString:tempAddress];
+    return [NSURLRequest requestWithURL:url];
+}
 
+- (IBAction)changePage:(id)sender
+{
+    if (engineSelect.currentPage == 0){
+        [webView setHidden:FALSE];
+        [webView2 setHidden:TRUE];
+    }
+    else if (engineSelect.currentPage == 1){
+        [webView2 setHidden:FALSE];
+        [webView setHidden:TRUE];
+    }
+}
 
 
 @end

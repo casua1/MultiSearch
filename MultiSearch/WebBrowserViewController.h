@@ -11,10 +11,17 @@
 @interface WebBrowserViewController : UIViewController
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) IBOutlet UIWebView *webView2;
 @property (strong, nonatomic) UIViewController *mainMenuViewController;
-@property (strong, nonatomic) NSString *address;
+@property (strong, nonatomic) NSString *address1;
+@property (strong, nonatomic) NSString *address2;
+@property (strong, nonatomic) IBOutlet UIPageControl *engineSelect;
 
 -(BOOL)webView: (UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;
+-(NSURLRequest*)getRequest:(NSString *)tempAddress;
+- (IBAction)changePage:(id)sender;
+
+
 
 
 @end

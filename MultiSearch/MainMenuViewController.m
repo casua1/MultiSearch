@@ -15,7 +15,7 @@
 
 @implementation MainMenuViewController
 
-@synthesize webBrowserViewController, testButton, address, term, pickerView, column1, column2;
+@synthesize webBrowserViewController, testButton, address1, address2, unfixedTerm, fixedTerm, pickerView, column;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,9 +30,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    column1 = [[NSMutableArray alloc] initWithObjects:@"Google", @"Yahoo", @"Bing", @"Ask", @"AOL", @"Dogpile", @"Duck Duck Go", nil];
-    column2 = [[NSMutableArray alloc] initWithObjects:@"Google", @"Yahoo", @"Bing", @"Ask", @"AOL", @"Dogpile", @"Duck Duck Go", nil];
-
+    column = [[NSMutableArray alloc] initWithObjects:@"Google", @"Yahoo", @"Bing", @"Ask", @"AOL", @"Dogpile", @"Duck Duck Go", nil];
 }
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView;
@@ -46,26 +44,22 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component;
 {
-    if (component == 0)
-    {
-        return [column1 count];
-    }
-    else
-    {
-        return [column2 count];
-    }
+//    if (component == 0)
+//    {
+        return [column count];
+//    }
 }
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component;
 {
-    if (component == 0)
-    {
-        return [column1 objectAtIndex:row];
-    }
+//    if (component == 0)
+//    {
+        return [column objectAtIndex:row];
+/*    }
     else
     {
-        return [column2 objectAtIndex:row];
-    }
+        return [column objectAtIndex:row];
+    }*/
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -84,16 +78,17 @@
 -(IBAction)switchToWebBrowserView:(id)sender
 {
     self.webBrowserViewController = [[WebBrowserViewController alloc] initWithNibName:@"WebBrowserViewController_iPhone" bundle:nil];
-    webBrowserViewController.address = address;
+    webBrowserViewController.address1 = address1;
+    webBrowserViewController.address2 = address2;
     [self.navigationController pushViewController:self.webBrowserViewController animated:YES];
-    [self.webBrowserViewController setTitle:@"Search Term"];
+    [self.webBrowserViewController setTitle:(@"%@", unfixedTerm)];
 }
 
 
 //Takes in the search term from the user.
 -(IBAction)getSearchTerm:(id)sender;
 {
-    term = [sender text];
+    unfixedTerm = [sender text];
     [sender resignFirstResponder];
     [self fixTerm];
     [self setAddress];
@@ -104,26 +99,26 @@
 //Formats the user search term to be compatible with the url.
 -(void)fixTerm
 {
-    NSString *string = term;
     NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@" " options:NSRegularExpressionCaseInsensitive error:&error];
-    term = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@"+"];
+    fixedTerm = [regex stringByReplacingMatchesInString:unfixedTerm options:0 range:NSMakeRange(0, [unfixedTerm length]) withTemplate:@"+"];
 }
 
 
 //Combines search term with the base url.
 -(void)setAddress
 {
-    NSString *selection1 = [column1 objectAtIndex:[pickerView selectedRowInComponent:0]];
-    NSString *selection2 = [column2 objectAtIndex:[pickerView selectedRowInComponent:1]];
-    NSString *base1 = [self returnBase:selection1 data:column1];
-    NSString *base2 = [self returnBase:selection2 data:column2];
-    address = [base1 stringByAppendingString:term];
+    NSString *selection1 = [column objectAtIndex:[pickerView selectedRowInComponent:0]];
+    NSString *selection2 = [column objectAtIndex:[pickerView selectedRowInComponent:1]];
+    NSString *base1 = [self returnBase:selection1];
+    NSString *base2 = [self returnBase:selection2];
+    address1 = [base1 stringByAppendingString:fixedTerm];
+    address2 = [base2 stringByAppendingString:fixedTerm];
 }
 
 
 //Returns URL base based on user search engine choice, selected via pickerview.
--(NSString *)returnBase:(NSString *) selection data:(NSMutableArray *) column
+-(NSString *)returnBase:(NSString *) selection
 {
     if (selection == [column objectAtIndex:0])
     {
